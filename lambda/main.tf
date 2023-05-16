@@ -34,14 +34,14 @@ resource "aws_lambda_function" "lambda" {
   runtime           = var.runtime
   timeout           = var.timeout
   handler           = var.handler_name
-  role              = aws_iam_role.lambda.arn
+  role              = var.create_role ? aws_iam_role.lambda[0].arn : var.lambda_role
 
   dynamic "vpc_config" {
     for_each = var.subnets != null && var.security_group_ids != null && var.default_security_group_id != null ? [1] : []
 
     content {
       security_group_ids = length(var.security_group_ids) > 0 ? data.aws_ssm_parameter.sg_id[*].value : split(",", var.default_security_group_id)
-      subnet_ids         = split(",", data.aws_ssm_parameter.lambda_subnets.value)
+      subnet_ids         = split(",", data.aws_ssm_parameter.lambda_subnets[0].value)
     }
   }
 

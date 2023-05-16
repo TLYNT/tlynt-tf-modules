@@ -26,7 +26,7 @@ data "aws_ssm_parameter" "lambda_subnets" {
 
 data "aws_ssm_parameter" "sg_id" {
   count           = var.security_group_ids != null ? length(var.security_group_ids) : 0
-  name            = var.security_group_ids[count.index]
+  name            = "/${var.prefix}/${var.env}/${var.security_group_ids[count.index]}"
   with_decryption = true
 }
 
