@@ -1,4 +1,3 @@
-# --- lambda/data.tf ---
 data "aws_ssm_parameter" "ssm_environment_variables" {
   for_each = { for k, v in var.ssm_environment_variables : k => v }
   name     = "/${var.prefix}/${var.env}/${each.value}"

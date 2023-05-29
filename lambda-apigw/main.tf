@@ -1,17 +1,25 @@
-# --- lambda/main.tf ---
 terraform {
   required_version = "~> 1"
 
   required_providers {
-    aws = "4.49.0"
+    aws = "~> 4"
   }
 }
 
+## Added layers ARN for both ARM and Intel processors 
+locals {
+  layers = [
+    "arn:aws:lambda:${var.region}:580247275435:layer:LambdaInsightsExtension-Arm64:2",
+    "arn:aws:lambda:${var.region}:580247275435:layer:LambdaInsightsExtension:35"
+  ]
+}
+
 # ------------------------------------------------------------------------------
-# CREATE S3 OBJECT
+# CREATE S3 OBJECT TO STORE ARCHIVE IN S3 AS FOR LAMBDA WE USING ZIP DEPLOYMENT
+# SO WE HAVE TO STORE ZIP INTO S3 SO BELOW CONFIG IS FOR THE SAME
 # ------------------------------------------------------------------------------
 
-resource "aws_s3_object" "s3_auth_lambda" {
+resource "aws_s3_object" "s3_lambda" {
   bucket       = "${var.prefix}-${var.env}-${var.lambda_bucket}"
   key          = "lambda/${var.lambda_name}.zip"
   source       = "${var.source_path}/${var.lambda_name}.zip"
@@ -28,13 +36,13 @@ resource "aws_lambda_function" "lambda" {
   function_name     = "${var.prefix}-${var.env}-${var.lambda_name}"
   architectures     = var.architectures
   memory_size       = var.lambda_memory
-  s3_bucket         = aws_s3_object.s3_auth_lambda.bucket
-  s3_key            = aws_s3_object.s3_auth_lambda.key
-  s3_object_version = aws_s3_object.s3_auth_lambda.version_id
+  s3_bucket         = aws_s3_object.s3_lambda.bucket
+  s3_key            = aws_s3_object.s3_lambda.key
+  s3_object_version = aws_s3_object.s3_lambda.version_id
   runtime           = var.runtime
   timeout           = var.timeout
   handler           = var.handler_name
-  role              = var.create_role ? aws_iam_role.lambda[0].arn : var.lambda_role
+  role              = var.lambda_role
 
   dynamic "vpc_config" {
     for_each = var.subnets != null && var.security_group_ids != null && var.default_security_group_id != null ? [1] : []
@@ -55,7 +63,7 @@ resource "aws_lambda_function" "lambda" {
   ## Refer here: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Lambda-Insights-extension-versionsx86-64.html
 
   layers = [
-    "arn:aws:lambda:${var.region}:580247275435:layer:LambdaInsightsExtension-Arm64:2"
+    local.layers[element(local.layers, var.architecture == "arm64" ? 0 : 1)]
   ]
 
   tags = {
@@ -88,7 +96,9 @@ resource "aws_cloudwatch_log_group" "lambda_logs" {
   retention_in_days = var.logs_retention
 
   tags = {
-    Project = "${var.project}"
-    program = "${var.program}"
+    Project     = "${var.project}"
+    Environment = "${var.env}"
+    Region      = "${var.region}"
+    Program     = "${var.program}"
   }
 }

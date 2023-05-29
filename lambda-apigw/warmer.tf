@@ -1,8 +1,7 @@
-# --- lambda/warmer.tf ---
 resource "aws_cloudwatch_event_rule" "rule" {
   name                = "${var.prefix}-${var.lambda_name}-${var.env}-${var.lambda_warmer_rule_name}"
-  description         = var.description
-  schedule_expression = var.schedule_expression
+  description         = var.lambda_warmer_rule_desc
+  schedule_expression = var.lambda_warmer_rule_schedule
 
   tags = {
     Project     = "${var.prefix}"
@@ -30,3 +29,4 @@ resource "aws_lambda_permission" "cloudwatch_warmer_permission" {
   source_arn    = aws_cloudwatch_event_rule.rule.arn
 
 }
+

@@ -33,7 +33,7 @@ No modules.
 | [aws_lambda_function.lambda](https://registry.terraform.io/providers/hashicorp/aws/4.49.0/docs/resources/lambda_function) | resource |
 | [aws_lambda_permission.api](https://registry.terraform.io/providers/hashicorp/aws/4.49.0/docs/resources/lambda_permission) | resource |
 | [aws_lambda_permission.cloudwatch_warmer_permission](https://registry.terraform.io/providers/hashicorp/aws/4.49.0/docs/resources/lambda_permission) | resource |
-| [aws_s3_object.s3_auth_lambda](https://registry.terraform.io/providers/hashicorp/aws/4.49.0/docs/resources/s3_object) | resource |
+| [aws_s3_object.s3_lambda](https://registry.terraform.io/providers/hashicorp/aws/4.49.0/docs/resources/s3_object) | resource |
 | [aws_iam_policy_document.additional_inline](https://registry.terraform.io/providers/hashicorp/aws/4.49.0/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.assume_role](https://registry.terraform.io/providers/hashicorp/aws/4.49.0/docs/data-sources/iam_policy_document) | data source |
 | [aws_ssm_parameter.apigw_exec_arn](https://registry.terraform.io/providers/hashicorp/aws/4.49.0/docs/data-sources/ssm_parameter) | data source |
@@ -81,3 +81,4 @@ No modules.
 | <a name="output_function_name"></a> [function\_name](#output\_function\_name) | Name of the Lambda function. |
 | <a name="output_invoke_arn"></a> [invoke\_arn](#output\_invoke\_arn) | Lambda Invoke ARN |
 <!-- END_TF_DOCS -->
+
