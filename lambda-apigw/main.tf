@@ -102,3 +102,4 @@ resource "aws_cloudwatch_log_group" "lambda_logs" {
     Program     = "${var.program}"
   }
 }
+
