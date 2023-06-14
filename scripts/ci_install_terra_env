@@ -1,0 +1,15 @@
+#!/bin/sh
+
+TFV=2.2.3
+TGV=0.1.0
+
+echo Installing tfenv v$TFV
+git clone -b $TFV --depth 1 https://github.com/tfutils/tfenv.git ~/.tfenv
+
+echo Installing tgenv v$TGV
+git clone -b $TGV --depth 1 https://github.com/01011111/tgenv ~/.tgenv
+
+echo "${HOME}/.tfenv/bin" >> $GITHUB_PATH
+echo "${HOME}/.tgenv/bin" >> $GITHUB_PATH
+
+echo Done
